@@ -12,7 +12,12 @@ import {useParams,Link} from "react-router-dom";
 import {useStateValue} from './StateProvider'
 import firebase from "firebase"
 import { inputAdornmentClasses } from "@mui/material";
+import ScrollableFeed from 'react-scrollable-feed'
+import audio from "./button-3.mp3";
+
+
 const Chat = ()=>{
+    const chat_body = document.querySelector(".chat_body");
     const [sms,setsms] = useState([]);
     console.log(sms);
     const [{user},dispatch] = useStateValue();
@@ -42,16 +47,19 @@ useEffect(() => {
 
 
 const sendmsg =(e)=>{
-
     e.preventDefault();
 
-    
-db.collection('rooms').doc(roomId).collection('massages').add({
+if(input==""){
+    alert("type")
+}else{
+    new Audio(audio).play();
+    db.collection('rooms').doc(roomId).collection('massages').add({
     massages:input,
     name:user.displayName,
-timestamp:firebase.firestore.FieldValue.serverTimestamp(),
-});
-setinput("");
+    timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+     });
+    setinput("");
+}
 }
 
 return (
@@ -73,21 +81,25 @@ return (
 </div>
 
 </div>
+
 <div className="chat_body">
+{/* <ScrollableFeed className="off" > */}
+    <ScrollableFeed className="off">
     {
         
 sms.map((fullsms)=>(
 <p className={`chat_sms ${fullsms.name===user.displayName && "chat_rcv"}` }>
-    <span className="chat_name_">~ {fullsms.name}</span>
+    <span className="chat_name_"> ~ {fullsms.name}</span>
     {fullsms.massages}
 <div className="timestap_chat">
-{new Date(fullsms.timestamp?.toDate()).toUTCString()}
+{new Date(fullsms.timestamp?.toDate()).toLocaleTimeString()}
 </div>
 </p>
 
 ))
 
     }
+    </ScrollableFeed>
 
 {/* <p className={`chat_sms ${true && "chat_rcv"}` }>
     <span className="chat_name_">Sayed</span>
@@ -98,11 +110,12 @@ Hello Guys!!
 
 </p> */}
 </div>
+
 <div className="chat_futter">
 <SentimentSatisfiedAltIcon/>
 <form>
 <input required value={input} placeholder="Type Your sms" type="text" onChange={(e)=>{setinput(e.target.value)}}></input>
-<button onClick={sendmsg} type="submit"><IconButton><SendIcon/></IconButton></button>
+<button  onClick={sendmsg} type="submit"><IconButton><SendIcon/></IconButton></button>
 
 </form>
 

@@ -6,10 +6,12 @@ import React, { useState,useEffect } from "react"
  import SearchIcon from '@mui/icons-material/Search';
 import Sidebarchat from "./SideChat";import Chat from "./Chat";
 import {useStateValue} from "./StateProvider"
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 // import { spanshot } from "firebase/app";
 // import {onSnapshot } from "firebase/firestore";
+import audio from "./button-3.mp3";
 import db from "./firebaseas"
-import { Unsubscribe } from "@mui/icons-material";
+import { ContactlessOutlined, Unsubscribe } from "@mui/icons-material";
  const Sidebar  = (addNewchat)=>{
 
 
@@ -38,12 +40,26 @@ useEffect(() => {
    }
 
 }, []);
-
+const [slow,setshow] = useState(true);
+//sidehide
+const sidehide = ()=>{
+    new Audio(audio).play();
+    const sidebar  = document.querySelector('.sidebar');
+    console.log("sidebar");
+    setshow(!slow);
+    
+ 
+     
+    
+}
 
 return (
+<> 
+<div className={slow? "slide_hide" : "slide_hide_update"}  >
+    <IconButton>  <ChevronRightIcon onClick={sidehide}/></IconButton>
+  </div>   
+<div className={slow? "sidebar" : "sidebar_aa"} >
 
-<div className="sidebar">
- 
 <div className='sidebar_header'>
  <Avatar src={user?.photoURL}/> 
 <div className="sidebar_headerright">
@@ -75,7 +91,7 @@ return (
 </div>
 </div>
 
-
+</>
 )
 
 
